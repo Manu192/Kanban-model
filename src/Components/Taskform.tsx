@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createTask } from '@/lib/apis';
-// Assuming your types are correctly imported from the lib folder
+
 import type { NewTask, Task } from '@/lib/types'; 
 
-// Define initial form state for reset
+
 const initialFormState: NewTask = {
   title: '',
   description: '',
@@ -14,7 +14,7 @@ const initialFormState: NewTask = {
   priority: 'MEDIUM',
 };
 
-// Assuming this component is wrapped in a modal and needs a close handler
+
 type TaskFormProps = {
   onClose: () => void;
 };
@@ -26,11 +26,11 @@ export default function TaskForm({ onClose }: TaskFormProps) {
   const mutation = useMutation<Task, Error, NewTask>({
     mutationFn: createTask,
     onSuccess: () => {
-      // 1. Invalidate the task cache to refetch and update the board
+     
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      // 2. Reset the form fields
+      
       setForm(initialFormState);
-      // 3. Close the modal
+    
       onClose(); 
     },
     onError: (error) => {

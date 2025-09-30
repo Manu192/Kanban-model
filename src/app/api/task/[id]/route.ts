@@ -1,18 +1,24 @@
 import { NextResponse } from 'next/server';
-import { tasks } from '@/lib/store';
+import type { NextRequest } from 'next/server';
 import type { Task } from '@/lib/types';
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  const updates = await req.json();
-  const index = tasks.findIndex((t) => t.id === params.id);
+let tasks: Task[] = [];
+
+export async function PUT(request: NextRequest, context: { params: { id: string } }) {
+  const updates = await request.json();
+  const { id } = context.params;
+
+  const index = tasks.findIndex((t) => t.id === id);
   if (index === -1) return NextResponse.json({ error: 'Task not found' }, { status: 404 });
 
   tasks[index] = { ...tasks[index], ...updates };
   return NextResponse.json(tasks[index]);
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
-  const index = tasks.findIndex((t) => t.id === params.id);
+export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
+
+  const index = tasks.findIndex((t) => t.id === id);
   if (index === -1) return NextResponse.json({ error: 'Task not found' }, { status: 404 });
 
   const deleted = tasks.splice(index, 1)[0];
